@@ -11,44 +11,59 @@ function TextForm() {
   const [oldWord, setOldWord] = useState("");
   const [newWord, setNewWord] = useState("");
 
-  // Handle textarea change
+  // 🌙 Dark Mode State
+  const [darkMode, setDarkMode] = useState(false);
+
+  // 🌙 Dark Mode Toggle Function (FULL SCREEN)
+  function toggleDarkMode() {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+
+    if (newMode) {
+      document.body.style.backgroundColor = "#121212";
+      document.body.style.color = "#ffffff";
+    } else {
+      document.body.style.backgroundColor = "#ffffff";
+      document.body.style.color = "#000000";
+    }
+  }
+
+  function removeExtraSpaces() {
+  const cleanedText = text.replace(/\s+/g, " ").trim();
+  setText(cleanedText);
+}
+
+
+
+
+
   function handleChange(e) {
     setText(e.target.value);
   }
 
-  // Convert to uppercase
   function convertToUpper() {
     setText(text.toUpperCase());
   }
 
-  // Convert to lowercase
   function convertToLower() {
     setText(text.toLowerCase());
   }
 
-  // Copy text to clipboard
   function copyToClipboard() {
     navigator.clipboard.writeText(text);
     alert("Text copied to clipboard!");
   }
 
-  // ---------------------------
-  // REPLACE FUNCTION
-  // Replace all occurrences of oldWord with newWord
-  // ---------------------------
   function replaceWord() {
     if (!oldWord) return;
 
     const regex = new RegExp(`\\b${oldWord}\\b`, "gi");
     const updatedText = text.replace(regex, newWord);
-
     setText(updatedText);
   }
 
-  // Character Count
   const characterCount = text.length;
 
-  // Highlight Important Word (Preview Only)
   const getHighlightedText = () => {
     if (!importantWord) return text;
 
@@ -61,8 +76,22 @@ function TextForm() {
   };
 
   return (
-    <div className="container mt-4">
+    <div
+      className="container mt-4"
+      style={{
+        minHeight: "100vh",
+        padding: "20px",
+      }}
+    >
       <h2>Enter Text Below</h2>
+
+      {/* 🌙 Dark Mode Button */}
+      <button
+        className="btn btn-dark mt-2 mb-3"
+        onClick={toggleDarkMode}
+      >
+        {darkMode ? "Light Mode" : "Dark Mode"}
+      </button>
 
       {/* Textarea */}
       <textarea
@@ -72,8 +101,13 @@ function TextForm() {
         onChange={handleChange}
         placeholder="Write something..."
         spellCheck={true}
+        style={{
+          backgroundColor: darkMode ? "#1e1e1e" : "#ffffff",
+          color: darkMode ? "#ffffff" : "#000000",
+        }}
       ></textarea>
-
+        
+        
       {/* Buttons */}
       <button
         className="btn btn-primary mt-3 me-2"
@@ -88,6 +122,17 @@ function TextForm() {
       >
         Lowercase
       </button>
+      
+      <button
+     className="btn btn-warning mt-3 ms-2"
+     onClick={removeExtraSpaces}
+     >
+     Remove Extra Spaces
+     </button>
+
+
+
+
 
       <button
         className="btn btn-success mt-3 me-2"
@@ -106,6 +151,10 @@ function TextForm() {
           placeholder="Enter word to replace"
           value={oldWord}
           onChange={(e) => setOldWord(e.target.value)}
+          style={{
+            backgroundColor: darkMode ? "#1e1e1e" : "#ffffff",
+            color: darkMode ? "#ffffff" : "#000000",
+          }}
         />
 
         <input
@@ -114,6 +163,10 @@ function TextForm() {
           placeholder="Enter new word"
           value={newWord}
           onChange={(e) => setNewWord(e.target.value)}
+          style={{
+            backgroundColor: darkMode ? "#1e1e1e" : "#ffffff",
+            color: darkMode ? "#ffffff" : "#000000",
+          }}
         />
 
         <button
@@ -132,6 +185,10 @@ function TextForm() {
           placeholder="Enter important word to bold"
           value={importantWord}
           onChange={(e) => setImportantWord(e.target.value)}
+          style={{
+            backgroundColor: darkMode ? "#1e1e1e" : "#ffffff",
+            color: darkMode ? "#ffffff" : "#000000",
+          }}
         />
       </div>
 
@@ -143,11 +200,16 @@ function TextForm() {
       {/* Preview Section */}
       <div className="mt-4">
         <h4>Preview</h4>
+
+        <p>
+          {text.length > 0 ? text : "Enter your preview text"}
+        </p>
+
         <p
           dangerouslySetInnerHTML={{
             __html: getHighlightedText(),
           }}
-        ></p>
+        />
       </div>
     </div>
   );
